@@ -8,11 +8,28 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-    <com.qozix.tileview.TileView
-        android:id="@+id/tile_view"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
-    </com.qozix.tileview.TileView>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.qozix.tileview.TileView
+            android:id="@+id/tile_view"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+        </com.qozix.tileview.TileView>
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:padding="20dp"
+            android:background="@drawable/circle_background_shape"
+            android:layout_margin="20dp"
+            app:srcCompat="@drawable/ic_gps_fixed_black_24dp" />
+
+    </FrameLayout>
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
@@ -22,6 +39,8 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_navdrawer"
         app:menu="@menu/activity_navdrawer_drawer"
-        />
+        >
+    </android.support.design.widget.NavigationView>
+
 
 </android.support.v4.widget.DrawerLayout>
