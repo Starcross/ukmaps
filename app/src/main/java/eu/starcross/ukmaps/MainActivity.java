@@ -3,10 +3,12 @@ package eu.starcross.ukmaps;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -33,11 +35,11 @@ import com.qozix.tileview.widgets.ZoomPanLayout.ZoomPanListener;
 import uk.me.jstott.jcoord.LatLng;
 import uk.me.jstott.jcoord.OSRef;
 
-    public class MainActivity extends AppCompatActivity
-            implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity
+    implements NavigationView.OnNavigationItemSelectedListener {
 
 
-        /** Interval for location updates. Inexact. Updates may be more or less frequent  */
+     /** Interval for location updates. Inexact. Updates may be more or less frequent  */
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     /**The fastest rate for active location updates. Updates will never be more frequent */
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
@@ -46,6 +48,8 @@ import uk.me.jstott.jcoord.OSRef;
 
     // Use unclear - code appears to be arbitrary
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+
+    private SharedPreferences sharedPref;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
@@ -63,6 +67,9 @@ import uk.me.jstott.jcoord.OSRef;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String tile_base_url = sharedPref.getString("map_tile_url","");
+
         setContentView( R.layout.activity_main );
         mTileView = (TileView) findViewById(R.id.tile_view);
         mTileView.setSize( 280000, 520000 );  // the original size of the untiled image
@@ -71,7 +78,7 @@ import uk.me.jstott.jcoord.OSRef;
         mTileView.setMinimumScaleMode(ZoomPanLayout.MinimumScaleMode.NONE);
         mTileView.setScaleLimits(0.2f, 3);
         mTileView.setShouldRenderWhilePanning(true);
-        mTileView.setBitmapProvider( new BitmapProviderPicasso());
+        mTileView.setBitmapProvider( new BitmapProviderPicasso(tile_base_url));
         mMapMoved = false; // Track movement away from gps centre
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -254,18 +261,20 @@ import uk.me.jstott.jcoord.OSRef;
         lock.disableKeyguard();
     }
 
-        @SuppressWarnings("StatementWithEmptyBody")
-        @Override
-        public boolean onNavigationItemSelected(MenuItem item) {
-            // Handle navigation view item clicks here.
-            int id = item.getItemId();
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
 
-            if (id == R.id.settings_button) {
-                Intent i = new Intent(this, SettingsActivity.class);
-                startActivity(i);
-            }
-
-            return true;
+        if (id == R.id.settings_button) {
+            Intent i = new Intent(this, SettingsActivity.class);
+            startActivity(i);
         }
+
+        return true;
+    }
+
+
 
 }

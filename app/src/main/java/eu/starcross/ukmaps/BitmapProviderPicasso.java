@@ -17,8 +17,8 @@ import java.io.IOException;
 
 public class BitmapProviderPicasso implements BitmapProvider{
 
-    private static final String base_url = "http://starcross.eu/map/";
-    private static final String TAG = "TileProject";
+    private String base_url;
+    private static final String TAG = "UKMaps";
     private static final int tilesize = 200;
 
     private static final String[][] mapGrid =
@@ -36,6 +36,14 @@ public class BitmapProviderPicasso implements BitmapProvider{
              {""  ,"SR","SS","ST","SU","TQ","TR"},
              {"SV","SW","SX","SY","SZ","TV",""  }
             };
+
+    public BitmapProviderPicasso(String url) {
+        updateUrl(url);
+    }
+
+    public void updateUrl(String url) {
+        base_url = url;
+    }
 
     public Bitmap getBitmap(Tile tile, Context context ) {
         Object data = tile.getData();
