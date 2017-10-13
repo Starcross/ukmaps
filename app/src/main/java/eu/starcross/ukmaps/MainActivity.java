@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -13,9 +14,11 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.app.KeyguardManager;
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     private boolean mMapMoved;
 
     private TileView mTileView;
+    private ImageButton mButtonCentreMap;
 
     // Location marker
     private ImageView mNavImageView;
@@ -95,6 +99,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        mButtonCentreMap = (ImageButton) findViewById(R.id.button_centre_map);
     }
 
     private void createLocationCallback() {
@@ -130,7 +135,6 @@ public class MainActivity extends AppCompatActivity
 
         if (mCurrentLocation != null) {
             LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            //LatLng latLng = new LatLng(51.764341, -0.213588);
             latLng.toOSGB36();
             OSRef osRef = latLng.toOSRef();
 
@@ -142,7 +146,14 @@ public class MainActivity extends AppCompatActivity
                 mTileView.scrollToAndCenter(x, y);
             }
             mTileView.moveMarker(mNavImageView, x, y);
+            mButtonCentreMap.setVisibility(View.GONE);
         }
+    }
+
+    /** Respond to a user click of the nav centre button */
+    public void centreMapAction(View view) {
+        mMapMoved = false; // Reset map moved tracker
+        updateLocation();
     }
 
     @Override
@@ -163,7 +174,6 @@ public class MainActivity extends AppCompatActivity
         // Remove location updates to save battery.
         stopLocationUpdates();
     }
-
 
 
     /**
@@ -232,8 +242,8 @@ public class MainActivity extends AppCompatActivity
         } catch (SecurityException e) {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
-
     }
+
     /**
      * Removes location updates from the FusedLocationApi.
      */
@@ -241,26 +251,46 @@ public class MainActivity extends AppCompatActivity
         mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
-
+    /** Add listeners to track events relating to user map movement */
     private void createPanListener() {
         mTileView.addZoomPanListener(new ZoomPanListener() {
             public void onPanBegin(int x, int y, Origination origin) {
                 mMapMoved = true;
             }
             public void onPanUpdate(int x, int y, Origination origin) {}
-            public void onPanEnd(int x, int y, Origination origin) {}
+            public void onPanEnd(int x, int y, Origination origin) {
+                checkNavMarkerLocation();
+            }
             public void onZoomBegin(float scale, Origination origin) {}
             public void onZoomUpdate(float scale, Origination origin) {}
-            public void onZoomEnd(float scale, Origination origin) {}
+            public void onZoomEnd(float scale, Origination origin) {
+                checkNavMarkerLocation();
+            }
         });
     }
 
+    /** See if nav marker is showing on the screen and display centre map button accordingly */
+    private void checkNavMarkerLocation() {
+        // Must be a nicer way to calculate if view is on screen
+        int[] location = new int[2];
+        mNavImageView.getLocationOnScreen(location);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        if (location[0] < 0 || location [1] < 0 ||
+            location[0] > dm.widthPixels || location[1] > dm.heightPixels) {
+            mButtonCentreMap.setVisibility(View.VISIBLE);
+        } else {
+            mButtonCentreMap.setVisibility(View.GONE);
+        }
+    }
+
+    /** Called onCreate to disable lock screen after screen blank */
     public void disableScreenLock() {
         KeyguardManager keyguardManager = (KeyguardManager)getSystemService(Activity.KEYGUARD_SERVICE);
         KeyguardLock lock = keyguardManager.newKeyguardLock(KEYGUARD_SERVICE);
         lock.disableKeyguard();
     }
 
+    /** Carry out actions when nav menu buttons are pressed */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
