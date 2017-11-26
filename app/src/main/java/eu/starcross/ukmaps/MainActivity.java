@@ -144,9 +144,9 @@ public class MainActivity extends AppCompatActivity
             // If user has not moved the map already, centre on gps
             if (!mMapMoved) {
                 mTileView.scrollToAndCenter(x, y);
+                mButtonCentreMap.setVisibility(View.GONE);
             }
             mTileView.moveMarker(mNavImageView, x, y);
-            mButtonCentreMap.setVisibility(View.GONE);
         }
     }
 
