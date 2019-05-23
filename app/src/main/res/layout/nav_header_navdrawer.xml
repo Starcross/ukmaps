@@ -16,10 +16,10 @@
 
     <ImageView
         android:id="@+id/uk_map_imageview"
-        android:layout_width="48dp"
+        android:layout_width="wrap_content"
         android:layout_height="42dp"
-        app:srcCompat="@drawable/ic_map_icon"
-        android:layout_weight="0.67" />
+        android:layout_weight="0.67"
+        app:srcCompat="@drawable/ic_map_icon" />
 
     <TextView
         android:id="@+id/textView"
