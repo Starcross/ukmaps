@@ -15,5 +15,6 @@
 
     <string name="pref_title_map_tile_url">Map Tile URL</string>
     <string name="pref_default_map_tile_url">http://</string>
+    <string name="centre_map">Centre map</string>
 
 </resources>

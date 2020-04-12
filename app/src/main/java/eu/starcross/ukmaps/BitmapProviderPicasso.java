@@ -11,9 +11,6 @@ import com.squareup.picasso.RequestCreator;
 
 import java.io.IOException;
 
-/**
- * Created by aluton on 11/07/2017.
- */
 
 public class BitmapProviderPicasso implements BitmapProvider{
 

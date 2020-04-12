@@ -1,11 +1,9 @@
 package eu.starcross.ukmaps;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -18,11 +16,10 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.app.KeyguardManager;
-import android.app.KeyguardManager.KeyguardLock;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -49,7 +46,6 @@ public class MainActivity extends AppCompatActivity
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     private static final String TAG = "TileProject";
 
-    // Use unclear - code appears to be arbitrary
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
     private SharedPreferences sharedPref;
@@ -90,7 +86,7 @@ public class MainActivity extends AppCompatActivity
         createLocationCallback();
         createLocationRequest();
         createPanListener();
-        disableScreenLock();
+        setBrightness();
 
         mNavImageView = new ImageView( this );
         mNavImageView.setImageResource(R.drawable.blue_circle_40);
@@ -156,6 +152,12 @@ public class MainActivity extends AppCompatActivity
         updateLocation();
     }
 
+    public void setBrightness() {
+        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+        layoutParams.screenBrightness = 1;
+        getWindow().setAttributes(layoutParams);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -166,6 +168,7 @@ public class MainActivity extends AppCompatActivity
         } else if (!checkPermissions()) {
             requestPermissions();
         }
+        setBrightness();
     }
 
     @Override
@@ -283,12 +286,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /** Called onCreate to disable lock screen after screen blank */
-    public void disableScreenLock() {
-        KeyguardManager keyguardManager = (KeyguardManager)getSystemService(Activity.KEYGUARD_SERVICE);
-        KeyguardLock lock = keyguardManager.newKeyguardLock(KEYGUARD_SERVICE);
-        lock.disableKeyguard();
-    }
 
     /** Carry out actions when nav menu buttons are pressed */
     @SuppressWarnings("StatementWithEmptyBody")
