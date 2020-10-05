@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity
     /**The fastest rate for active location updates. Updates will never be more frequent */
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-    private static final String TAG = "TileProject";
+    private static final String TAG = "UKMaps";
 
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
