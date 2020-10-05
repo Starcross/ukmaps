@@ -71,15 +71,15 @@ public class BitmapProviderPicasso implements BitmapProvider{
         return null;
     }
 
-    private String convertFilename(int column, int row) {
+    protected String convertFilename(int column, int row) {
         int x = column % tilesize;
         String grid = mapGrid[row/tilesize][column/tilesize];
         if (grid == "") {
             return null;
         }
         // Switch y axis
-        row = (tilesize * mapGrid.length) - row - 1;
-        int y = row % tilesize;
+        int iRow = (tilesize * mapGrid.length) - row - 1;
+        int y = iRow % tilesize;
         // Scale up to 5*
         x *= 5;
         y *= 5;

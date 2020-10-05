@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity
      * Requires ACCESS_FINE_LOCATION defined in AndroidManifest.xml.
      */
     private void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
+        mLocationRequest = LocationRequest.create();
 
         // Set the desired interval for active location updates.
         mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
